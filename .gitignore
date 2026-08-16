@@ -1,0 +1,30 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyInstaller / Packaging artifacts
+build/
+dist/
+*.spec.bak
+
+# Log files and temporary storage
+*.log
+*.tmp
+*.temp
+
+# Operating System Files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# IDE & Virtual Environments
+.vscode/
+.idea/
+.venv/
+env/
+venv/
+*.swp
+*.swo
