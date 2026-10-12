@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import (
     QWidget, QHBoxLayout, QLabel, QWidgetAction
 )
 
-from core.dpi_utils import enable_hidpi_awareness
+from core.dpi_utils import enable_hidpi_awareness, install_auto_ui_scale
 from core.screen_grabber import capture_full_desktop
 from core.config_store import load_config, save_config
 from models.watermark import WatermarkSettings
@@ -27,14 +27,14 @@ class _TrayMenuRow(QWidget):
         self._menu = menu
         self._callback = callback
         self._hover_bg = "#FEE2E2" if danger else "#F4F4F5"
-        self.setFixedHeight(36)
+        self.setFixedHeight(30)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
-        self.setStyleSheet("background-color: transparent; border-radius: 8px;")
+        self.setStyleSheet("background-color: transparent; border-radius: 6px;")
 
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(12, 0, 12, 0)
-        layout.setSpacing(10)
+        layout.setContentsMargins(10, 0, 10, 0)
+        layout.setSpacing(8)
 
         icon_lbl = QLabel()
         icon_lbl.setFixedSize(16, 16)
@@ -43,7 +43,7 @@ class _TrayMenuRow(QWidget):
 
         text_color = "#DC2626" if danger else "#27272A"
         text_lbl = QLabel(label)
-        text_lbl.setStyleSheet(f"color: {text_color}; font-size: 13px; background: transparent;")
+        text_lbl.setStyleSheet(f"color: {text_color}; font-size: 12px; background: transparent;")
         layout.addWidget(text_lbl)
 
         layout.addStretch()
@@ -52,7 +52,7 @@ class _TrayMenuRow(QWidget):
         if shortcut_text:
             self.shortcut_lbl = QLabel(shortcut_text)
             self.shortcut_lbl.setStyleSheet(
-                "color: #A1A1AA; font-size: 12px; font-family: Consolas, monospace; background: transparent;"
+                "color: #A1A1AA; font-size: 11px; font-family: Consolas, monospace; background: transparent;"
             )
             layout.addWidget(self.shortcut_lbl)
 
@@ -61,11 +61,11 @@ class _TrayMenuRow(QWidget):
             self.shortcut_lbl.setText(text)
 
     def enterEvent(self, event):
-        self.setStyleSheet(f"background-color: {self._hover_bg}; border-radius: 8px;")
+        self.setStyleSheet(f"background-color: {self._hover_bg}; border-radius: 6px;")
         super().enterEvent(event)
 
     def leaveEvent(self, event):
-        self.setStyleSheet("background-color: transparent; border-radius: 8px;")
+        self.setStyleSheet("background-color: transparent; border-radius: 6px;")
         super().leaveEvent(event)
 
     def mousePressEvent(self, event):
@@ -83,6 +83,7 @@ class ZCaptureApp:
             "hotkey": "Ctrl+Shift+S",
             "auto_copy": True,
             "show_magnifier": True,
+            "auto_detect_windows": True,
             "save_dir": "",
             "stroke_width": 3,
             "default_font": "Segoe UI",
@@ -161,14 +162,14 @@ class ZCaptureApp:
         self.tray_menu.setStyleSheet("""
             QMenu {
                 background-color: #FFFFFF;
-                border: 1px solid rgba(0,0,0,0.08);
-                border-radius: 12px;
-                padding: 6px;
+                border: 1px solid rgba(0,0,0,0.10);
+                border-radius: 10px;
+                padding: 4px;
             }
             QMenu::separator {
                 height: 1px;
-                background-color: rgba(0,0,0,0.06);
-                margin: 4px 8px;
+                background-color: rgba(0,0,0,0.08);
+                margin: 3px 6px;
             }
         """)
 
@@ -210,7 +211,10 @@ class ZCaptureApp:
             key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0, winreg.KEY_ALL_ACCESS)
             app_name = "ZCapture"
             if enable:
-                exe_path = f'"{os.path.abspath(sys.argv[0])}"'
+                if getattr(sys, "frozen", False):
+                    exe_path = f'"{sys.executable}"'
+                else:
+                    exe_path = f'"{sys.executable}" "{os.path.abspath(sys.argv[0])}"'
                 winreg.SetValueEx(key, app_name, 0, winreg.REG_SZ, exe_path)
             else:
                 try:
@@ -328,10 +332,16 @@ class ZCaptureApp:
 
 
 def main():
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
     enable_hidpi_awareness()
 
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False)
+    install_auto_ui_scale(app, exclude_types=(ScreenOverlayCanvas,))
 
     icon_path = os.path.join(os.path.dirname(__file__), "assets", "app_icon.ico")
     if os.path.exists(icon_path):

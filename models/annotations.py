@@ -39,10 +39,11 @@ class AnnotationItem:
 
 
 class ShapeItem(AnnotationItem):
-    def __init__(self, tool_type, rect: QRect, color, stroke_width=3, fill=False, corner_radius=8):
+    def __init__(self, tool_type, rect: QRect, color, stroke_width=3, fill=False, corner_radius=8, fill_color=None):
         super().__init__(tool_type, color, stroke_width)
         self.rect = rect
         self.fill = fill
+        self.fill_color = QColor(fill_color) if fill_color is not None else None
         self.corner_radius = corner_radius
 
     def get_bounding_rect(self) -> QRect:
@@ -121,15 +122,13 @@ class TextItem(AnnotationItem):
     def calc_rect(self):
         metrics = QFontMetrics(self.font)
         lines = self.text.split("\n") if "\n" in self.text else [self.text]
-        max_w = 0
-        line_spacing = metrics.lineSpacing()
-        for line in lines:
-            max_w = max(max_w, metrics.horizontalAdvance(line))
-        total_h = max(metrics.height(), len(lines) * line_spacing)
+        max_w = max((metrics.horizontalAdvance(l if l else " ") for l in lines), default=0)
+        line_spacing = max(18, metrics.lineSpacing())
+        total_h = max(1, len(lines)) * line_spacing
 
-        pad_x = 8
-        pad_y = 5
-        self.rect = QRect(self.pos.x(), self.pos.y(), max_w + pad_x * 2, max(total_h + pad_y * 2, 26))
+        pad_x = 10
+        pad_y = 6
+        self.rect = QRect(self.pos.x(), self.pos.y(), max(60, max_w + pad_x * 2), max(28, total_h + pad_y * 2))
 
     def get_bounding_rect(self) -> QRect:
         self.calc_rect()
@@ -219,3 +218,26 @@ class BlackoutItem(AnnotationItem):
 
     def get_bounding_rect(self) -> QRect:
         return self.rect.normalized()
+
+
+class LineItem(AnnotationItem):
+    """Đoạn thẳng vector (Straight Line) sạch, kết nối start_p và end_p."""
+    def __init__(self, start_p: QPoint, end_p: QPoint, color, stroke_width=3):
+        super().__init__("line", color, stroke_width)
+        self.start_p = start_p
+        self.end_p = end_p
+
+    def get_bounding_rect(self) -> QRect:
+        return QRect(self.start_p, self.end_p).normalized().adjusted(-6, -6, 6, 6)
+
+
+class BlurItem(AnnotationItem):
+    """Làm mờ mịn (Smooth Blur) che thông tin nhạy cảm mềm mại tự nhiên."""
+    def __init__(self, rect: QRect, blur_radius: int = 12):
+        super().__init__("blur", QColor(0, 0, 0))
+        self.rect = rect
+        self.blur_radius = blur_radius
+
+    def get_bounding_rect(self) -> QRect:
+        return self.rect.normalized()
+

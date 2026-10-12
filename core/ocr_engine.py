@@ -42,12 +42,12 @@ def ensure_ocr_executable() -> bool:
     sys_tasks = r"C:\Windows\Microsoft.NET\Framework64\v4.0.30319\System.Threading.Tasks.dll"
 
     cmd = [
-        csc_path, "/target:exe", f'/r:"{winmd_path}"', f'/r:"{sys_rt}"', f'/r:"{sys_dll}"', f'/r:"{sys_tasks}"',
-        f'/out:"{exe_path}"', f'"{cs_path}"'
+        csc_path, "/target:exe", f"/r:{winmd_path}", f"/r:{sys_rt}", f"/r:{sys_dll}", f"/r:{sys_tasks}",
+        f"/out:{exe_path}", cs_path
     ]
     try:
         flags = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
-        subprocess.run(" ".join(cmd), shell=True, capture_output=True, check=True, creationflags=flags)
+        subprocess.run(cmd, capture_output=True, check=True, creationflags=flags)
         return os.path.exists(exe_path)
     except Exception as e:
         print(f"[OCR Compiler Error]: {e}")

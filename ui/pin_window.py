@@ -1,8 +1,8 @@
 import os, math, time
-from PyQt6.QtCore import Qt, QPoint, QPointF, QRect, QRectF, QSize, QTimer
+from PyQt6.QtCore import Qt, QPoint, QPointF, QRect, QRectF, QSize, QTimer, QThread
 from PyQt6.QtGui import (
     QPixmap, QPainter, QAction, QColor, QKeySequence, QShortcut, QGuiApplication,
-    QPen, QBrush, QFont, QCursor, QPolygonF, QPainterPath, QIcon, QFontMetrics
+    QPen, QBrush, QFont, QCursor, QPolygonF, QPainterPath, QIcon, QFontMetrics, QTransform
 )
 from PyQt6.QtWidgets import (
     QWidget, QMenu, QFileDialog, QHBoxLayout, QLabel, QToolButton, QVBoxLayout,
@@ -1186,12 +1186,18 @@ class PinnedWindow(QWidget):
         super().closeEvent(event)
 
     def wheelEvent(self, event):
-        """Phóng to / Thu nhỏ bằng con lăn chuột."""
+        """Phóng to / Thu nhỏ bằng con lăn chuột, hoặc chỉnh Opacity nếu giữ Ctrl/Alt."""
+        modifiers = event.modifiers()
         delta = event.angleDelta().y()
-        if delta > 0:
-            self.zoom_in()
+        if modifiers & (Qt.KeyboardModifier.ControlModifier | Qt.KeyboardModifier.AltModifier):
+            step = 0.05 if delta > 0 else -0.05
+            new_op = max(0.15, min(1.0, self.opacity_val + step))
+            self.set_opacity(new_op)
         else:
-            self.zoom_out()
+            if delta > 0:
+                self.zoom_in()
+            else:
+                self.zoom_out()
 
     def zoom_in(self):
         self.current_scale *= 1.1
@@ -1211,6 +1217,54 @@ class PinnedWindow(QWidget):
     def _reset_zoom(self):
         self.current_scale = 1.0
         self.apply_scale()
+
+    def rotate_clockwise(self):
+        """Xoay ảnh 90 độ cùng chiều kim đồng hồ."""
+        transform = QTransform().rotate(90)
+        self.original_pixmap = self.original_pixmap.transformed(transform, Qt.TransformationMode.SmoothTransformation)
+        self.apply_scale()
+        self.update()
+
+    def rotate_counter_clockwise(self):
+        """Xoay ảnh 90 độ ngược chiều kim đồng hồ."""
+        transform = QTransform().rotate(-90)
+        self.original_pixmap = self.original_pixmap.transformed(transform, Qt.TransformationMode.SmoothTransformation)
+        self.apply_scale()
+        self.update()
+
+    def flip_horizontal(self):
+        """Lật ảnh theo trục ngang."""
+        transform = QTransform().scale(-1, 1)
+        self.original_pixmap = self.original_pixmap.transformed(transform, Qt.TransformationMode.SmoothTransformation)
+        self.update()
+
+    def flip_vertical(self):
+        """Lật ảnh theo trục dọc."""
+        transform = QTransform().scale(1, -1)
+        self.original_pixmap = self.original_pixmap.transformed(transform, Qt.TransformationMode.SmoothTransformation)
+        self.update()
+
+    def perform_ocr(self):
+        """Trích xuất chữ trực tiếp từ ảnh ghim bằng OCR Engine."""
+        from ui.overlay.ocr_worker import _OCRWorker
+        from ui.ocr_dialog import OCRDialog
+        pm = self.get_merged_pixmap()
+        if pm.isNull():
+            return
+
+        self._ocr_thread = QThread()
+        self._ocr_worker = _OCRWorker(pm)
+        self._ocr_worker.moveToThread(self._ocr_thread)
+        self._ocr_thread.started.connect(self._ocr_worker.run)
+
+        def on_ocr_done(text):
+            self._ocr_thread.quit()
+            self._ocr_thread.wait()
+            dlg = OCRDialog(text, parent=self)
+            dlg.exec()
+
+        self._ocr_worker.finished.connect(on_ocr_done)
+        self._ocr_thread.start()
 
     # -------------------------------------------------------------------------
     # Minimize / Opacity
@@ -1290,6 +1344,31 @@ class PinnedWindow(QWidget):
 
         menu.addSeparator()
 
+        ocr_act = QAction("🔍  Trích xuất văn bản (OCR)", self)
+        ocr_act.triggered.connect(self.perform_ocr)
+        menu.addAction(ocr_act)
+
+        transform_menu = menu.addMenu("🔄  Xoay & Lật ảnh")
+        transform_menu.setStyleSheet(menu.styleSheet())
+
+        rot_cw = QAction("↷  Xoay 90° cùng chiều kim đồng hồ", self)
+        rot_cw.triggered.connect(self.rotate_clockwise)
+        transform_menu.addAction(rot_cw)
+
+        rot_ccw = QAction("↶  Xoay 90° ngược chiều kim đồng hồ", self)
+        rot_ccw.triggered.connect(self.rotate_counter_clockwise)
+        transform_menu.addAction(rot_ccw)
+
+        flip_h = QAction("⇄  Lật ngang (Flip Horizontal)", self)
+        flip_h.triggered.connect(self.flip_horizontal)
+        transform_menu.addAction(flip_h)
+
+        flip_v = QAction("⇅  Lật dọc (Flip Vertical)", self)
+        flip_v.triggered.connect(self.flip_vertical)
+        transform_menu.addAction(flip_v)
+
+        menu.addSeparator()
+
         copy_act = QAction("📋 Sao chép vào Clipboard", self)
         copy_act.triggered.connect(self.copy_to_clipboard)
         menu.addAction(copy_act)
@@ -1300,7 +1379,7 @@ class PinnedWindow(QWidget):
 
         menu.addSeparator()
 
-        op_menu = menu.addMenu("Độ trong suốt")
+        op_menu = menu.addMenu("Độ trong suốt (Ctrl+Cuộn chuột)")
         op_menu.setStyleSheet(menu.styleSheet())
         for val in [100, 80, 60, 40]:
             act = QAction(f"{val}%", self)
@@ -1309,6 +1388,10 @@ class PinnedWindow(QWidget):
                 act.setChecked(True)
             act.triggered.connect(lambda checked, v=val: self.set_opacity(v / 100.0))
             op_menu.addAction(act)
+
+        reset_zoom_act = QAction("🔍  Tỉ lệ gốc 100%", self)
+        reset_zoom_act.triggered.connect(self._reset_zoom)
+        menu.addAction(reset_zoom_act)
 
         menu.addSeparator()
 

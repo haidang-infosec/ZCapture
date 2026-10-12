@@ -678,6 +678,10 @@ class SettingsWindow(QDialog):
         self.magnifier_cb.setChecked(self.config_data.get("show_magnifier", True))
         l2.addWidget(self.magnifier_cb)
 
+        self.auto_detect_windows_cb = StyledCheckBox("Tự động nhận diện cửa sổ khi rê chuột (Smart Window Snapping)")
+        self.auto_detect_windows_cb.setChecked(self.config_data.get("auto_detect_windows", True))
+        l2.addWidget(self.auto_detect_windows_cb)
+
         self.freeze_animation_cb = StyledCheckBox("Enable screen dimming and transition effect on capture start")
         self.freeze_animation_cb.setChecked(self.config_data.get("freeze_animation", True))
         l2.addWidget(self.freeze_animation_cb)
@@ -1154,6 +1158,7 @@ class SettingsWindow(QDialog):
         self.capture_mode_combo.setCurrentText(self.config_data.get("default_capture_mode", "Region Selection"))
         self.auto_copy_cb.setChecked(self.config_data.get("auto_copy", True))
         self.magnifier_cb.setChecked(self.config_data.get("show_magnifier", True))
+        self.auto_detect_windows_cb.setChecked(self.config_data.get("auto_detect_windows", True))
         self.freeze_animation_cb.setChecked(self.config_data.get("freeze_animation", True))
 
         # Page 3: Formatting & Tools
@@ -1245,6 +1250,7 @@ class SettingsWindow(QDialog):
                 "hotkey": "Ctrl+Shift+S",
                 "auto_copy": True,
                 "show_magnifier": True,
+                "auto_detect_windows": True,
                 "save_dir": "",
                 "stroke_width": 3,
                 "default_font": "Segoe UI",
@@ -1306,6 +1312,7 @@ class SettingsWindow(QDialog):
         self.config_data["default_capture_mode"] = self.capture_mode_combo.currentText()
         self.config_data["auto_copy"] = self.auto_copy_cb.isChecked()
         self.config_data["show_magnifier"] = self.magnifier_cb.isChecked()
+        self.config_data["auto_detect_windows"] = self.auto_detect_windows_cb.isChecked()
         self.config_data["freeze_animation"] = self.freeze_animation_cb.isChecked()
 
         # Page 3: Formatting & Tools (With Colors!)

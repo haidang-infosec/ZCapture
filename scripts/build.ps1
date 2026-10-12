@@ -15,8 +15,11 @@ Write-Host "                ZCAPTURE AUTOMATED BUILD SYSTEM                     
 Write-Host "=====================================================================" -ForegroundColor Cyan
 Write-Host ""
 
-# Step 1: Don dep cache va cac thu muc build cu
-Write-Host "[1/4] Don dep cache __pycache__ va cac thu muc build cu..." -ForegroundColor Green
+# Step 1: Don dep tien trinh cu, cache va cac thu muc build cu
+Write-Host "[1/4] Dung tien trinh cu va don dep cache/build..." -ForegroundColor Green
+Stop-Process -Name ZCapture -Force -ErrorAction SilentlyContinue
+Start-Sleep -Milliseconds 500
+
 $dirsToClean = @("build", "dist")
 foreach ($dir in $dirsToClean) {
     if (Test-Path $dir) {
@@ -39,6 +42,7 @@ $pyFiles = @(
     "core/dpi_utils.py",
     "core/ocr_engine.py",
     "core/screen_grabber.py",
+    "core/window_detector.py",
     "models/annotations.py",
     "models/watermark.py",
     "ui/about_dialog.py",

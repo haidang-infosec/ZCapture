@@ -1,132 +1,140 @@
 from PyQt6.QtCore import Qt, QPoint, QRectF, QPointF
 from PyQt6.QtGui import QPainter, QPen, QBrush, QColor, QFont, QPixmap, QPolygonF, QIcon, QPainterPath
-from PyQt6.QtWidgets import QWidget
+from PyQt6.QtWidgets import QWidget, QLabel
 
-# --- Custom High-Definition Vector Icon Generators (Crisp Dark Charcoal #1C1C1E) ---
+# --- Custom High-Definition Vector Icon Generators (Crisp Charcoal #1C1C1E) ---
 
-def create_rect_icon() -> QIcon:
-    """Tạo Icon Khung Chữ Nhật Vector 42x42px Nét Sắc Đẳng Cấp."""
-    pm = QPixmap(42, 42)
+def create_rect_icon(size: int = 24) -> QIcon:
+    """Tạo Icon Khung Chữ Nhật Vector sắc nét, chuẩn thiết kế hiện đại."""
+    pm = QPixmap(size, size)
     pm.fill(Qt.GlobalColor.transparent)
     painter = QPainter(pm)
+    painter.scale(size / 24.0, size / 24.0)
     painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
 
-    pen = QPen(QColor(28, 28, 30), 2.2)
+    pen = QPen(QColor(28, 28, 30), 1.6, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin)
     painter.setPen(pen)
     painter.setBrush(Qt.BrushStyle.NoBrush)
-    painter.drawRoundedRect(QRectF(7, 11, 20, 16), 3, 3)
-
-    painter.setPen(Qt.PenStyle.NoPen)
-    painter.setBrush(QBrush(QColor(28, 28, 30)))
-    poly = QPolygonF([QPointF(29, 21), QPointF(35, 21), QPointF(32, 25)])
-    painter.drawPolygon(poly)
+    painter.drawRoundedRect(QRectF(3.5, 4.5, 13, 11), 2.5, 2.5)
 
     painter.end()
     return QIcon(pm)
 
-def create_pencil_icon() -> QIcon:
-    """Tạo Icon Bút Vẽ Vector 42x42px Nét Sắc Đẳng Cấp."""
-    pm = QPixmap(42, 42)
+def create_pencil_icon(size: int = 24) -> QIcon:
+    """Tạo Icon Bút Vẽ Vector sắc nét, độ chi tiết cao."""
+    pm = QPixmap(size, size)
     pm.fill(Qt.GlobalColor.transparent)
     painter = QPainter(pm)
+    painter.scale(size / 24.0, size / 24.0)
     painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
 
-    pen = QPen(QColor(28, 28, 30), 2)
+    pen = QPen(QColor(28, 28, 30), 1.6, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin)
     painter.setPen(pen)
     painter.setBrush(QBrush(QColor(28, 28, 30)))
 
     path = QPainterPath()
-    path.moveTo(QPointF(8, 25))
-    path.lineTo(QPointF(11, 14))
-    path.lineTo(QPointF(21, 24))
+    path.moveTo(QPointF(5, 16))
+    path.lineTo(QPointF(7.5, 7.5))
+    path.lineTo(QPointF(14.5, 14.5))
     path.closeSubpath()
     painter.drawPath(path)
 
-    nib = QPolygonF([QPointF(8, 25), QPointF(5, 28), QPointF(11, 27)])
+    nib = QPolygonF([QPointF(5, 16), QPointF(3, 18), QPointF(7, 17)])
     painter.drawPolygon(nib)
 
     painter.setPen(Qt.PenStyle.NoPen)
-    poly = QPolygonF([QPointF(29, 21), QPointF(35, 21), QPointF(32, 25)])
+    painter.setBrush(QBrush(QColor(60, 60, 67)))
+    poly = QPolygonF([QPointF(17.5, 15), QPointF(22, 15), QPointF(19.75, 18.5)])
     painter.drawPolygon(poly)
 
     painter.end()
     return QIcon(pm)
 
-def create_pointer_icon() -> QIcon:
-    """Tạo Icon Con Trỏ Chuột Vector 42x42px."""
-    pm = QPixmap(42, 42)
+def create_pointer_icon(size: int = 24) -> QIcon:
+    """Tạo Icon Con Trỏ Chuột Vector sắc nét theo chuẩn macOS Cursor."""
+    pm = QPixmap(size, size)
     pm.fill(Qt.GlobalColor.transparent)
     painter = QPainter(pm)
+    painter.scale(size / 24.0, size / 24.0)
     painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
 
-    painter.setPen(QPen(QColor(28, 28, 30), 1.5))
+    painter.setPen(QPen(QColor(28, 28, 30), 1.4, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin))
     painter.setBrush(QBrush(QColor(28, 28, 30)))
 
     poly = QPolygonF([
-        QPointF(11, 9),
-        QPointF(11, 29),
-        QPointF(16, 24),
-        QPointF(20, 31),
-        QPointF(24, 29),
-        QPointF(20, 22),
-        QPointF(27, 22)
+        QPointF(5.5, 3.5),
+        QPointF(5.5, 17.5),
+        QPointF(9.5, 13.5),
+        QPointF(12.5, 19),
+        QPointF(14.8, 17.8),
+        QPointF(11.8, 12.5),
+        QPointF(17, 12.5)
     ])
     painter.drawPolygon(poly)
 
     painter.end()
     return QIcon(pm)
 
-def create_mosaic_icon() -> QIcon:
-    """Tạo Icon Làm Mờ Mosaic Grid 42x42px."""
-    pm = QPixmap(42, 42)
+def create_mosaic_icon(size: int = 24) -> QIcon:
+    """Tạo Icon Làm Mờ Mosaic Grid sắc nét."""
+    pm = QPixmap(size, size)
     pm.fill(Qt.GlobalColor.transparent)
     painter = QPainter(pm)
+    painter.scale(size / 24.0, size / 24.0)
     painter.setRenderHint(QPainter.RenderHint.Antialiasing, False)
 
-    s = 4
-    start_x, start_y = 11, 11
+    s = 3
+    start_x, start_y = 4, 4.5
     painter.setPen(Qt.PenStyle.NoPen)
-    for row in range(5):
-        for col in range(5):
+    for row in range(4):
+        for col in range(4):
             if (row + col) % 2 == 0:
                 painter.setBrush(QBrush(QColor(28, 28, 30)))
             else:
                 painter.setBrush(QBrush(QColor(160, 160, 170)))
-            painter.drawRect(start_x + col * s, start_y + row * s, s, s)
+            painter.drawRect(int(start_x + col * s), int(start_y + row * s), s, s)
+
+    # Indicator tam giác nhỏ góc dưới phải
+    painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
+    painter.setBrush(QBrush(QColor(60, 60, 67)))
+    poly = QPolygonF([QPointF(17.5, 15), QPointF(22, 15), QPointF(19.75, 18.5)])
+    painter.drawPolygon(poly)
 
     painter.end()
     return QIcon(pm)
 
-def create_blackout_icon() -> QIcon:
-    """Tạo Icon Tô Đen Redact (Blackout) 42x42px."""
-    pm = QPixmap(42, 42)
+def create_blackout_icon(size: int = 24) -> QIcon:
+    """Tạo Icon Tô Đen Redact (Blackout) sắc nét."""
+    pm = QPixmap(size, size)
     pm.fill(Qt.GlobalColor.transparent)
     painter = QPainter(pm)
-    painter.setRenderHint(QPainter.RenderHint.Antialiasing, False)
+    painter.scale(size / 24.0, size / 24.0)
+    painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
 
     painter.setPen(Qt.PenStyle.NoPen)
     painter.setBrush(QBrush(QColor(28, 28, 30)))
-    painter.drawRoundedRect(9, 15, 24, 12, 2, 2)
+    painter.drawRoundedRect(QRectF(3.5, 7.5, 17, 9), 2.5, 2.5)
 
     painter.end()
     return QIcon(pm)
 
-def create_watermark_icon() -> QIcon:
-    """Tạo Icon Watermark Stamp HD 42x42px Sang Trọng."""
-    pm = QPixmap(42, 42)
+def create_watermark_icon(size: int = 24) -> QIcon:
+    """Tạo Icon Watermark Stamp gọn gàng."""
+    pm = QPixmap(size, size)
     pm.fill(Qt.GlobalColor.transparent)
     painter = QPainter(pm)
+    painter.scale(size / 24.0, size / 24.0)
     painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
 
-    pen = QPen(QColor(28, 28, 30), 2.2)
+    pen = QPen(QColor(28, 28, 30), 1.6)
     painter.setPen(pen)
     painter.setBrush(Qt.BrushStyle.NoBrush)
-    painter.drawEllipse(QRectF(8, 7, 26, 26))
+    painter.drawEllipse(QRectF(3.5, 3.5, 17, 17))
 
     painter.setPen(QPen(QColor(28, 28, 30)))
-    font = QFont("Segoe UI", 11, QFont.Weight.Bold)
+    font = QFont("Segoe UI", 9, QFont.Weight.Bold)
     painter.setFont(font)
-    painter.drawText(QRectF(8, 7, 26, 26), Qt.AlignmentFlag.AlignCenter, "W")
+    painter.drawText(QRectF(3.5, 3.5, 17, 17), Qt.AlignmentFlag.AlignCenter, "W")
 
     painter.end()
     return QIcon(pm)
@@ -200,26 +208,40 @@ def create_power_icon(size=16, color="#DC2626") -> QIcon:
     return QIcon(pm)
 
 
-from PyQt6.QtWidgets import QLabel
-
-
-class DragGripWidget(QLabel):
-    """Drag Handle Grip icon giúp người dùng nhận diện và kéo di chuyển thanh menu tùy ý."""
+class DragGripWidget(QWidget):
+    """Drag Handle Grip thanh lịch với các chấm vector tròn bo góc mịn màng chuẩn Figma/Apple."""
     def __init__(self, vertical: bool = False, parent=None):
         super().__init__(parent)
         self.vertical = vertical
         self.setCursor(Qt.CursorShape.SizeAllCursor)
-        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.setToolTip("Kéo để di chuyển thanh công cụ")
         if vertical:
             self.setFixedHeight(12)
-            self.setText("···")
-            self.setStyleSheet("color: #A1A1AA; font-size: 13px; font-weight: bold; background: transparent; padding: 0px;")
-            self.setToolTip("Kéo để di chuyển thanh công cụ")
+            self.setMinimumWidth(24)
         else:
             self.setFixedWidth(12)
-            self.setText("⋮")
-            self.setStyleSheet("color: #A1A1AA; font-size: 13px; font-weight: bold; background: transparent; padding: 0px;")
-            self.setToolTip("Kéo để di chuyển thanh công cụ")
+            self.setMinimumHeight(24)
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
+        painter.setPen(Qt.PenStyle.NoPen)
+        painter.setBrush(QBrush(QColor("#A1A1AA")))
+
+        w, h = self.width(), self.height()
+        r = 1.6
+        if self.vertical:
+            cx = w / 2.0
+            cy = h / 2.0
+            for dx in (-5.5, 0.0, 5.5):
+                for dy in (-2.2, 2.2):
+                    painter.drawEllipse(QPointF(cx + dx, cy + dy), r, r)
+        else:
+            cx = w / 2.0
+            cy = h / 2.0
+            for dx in (-2.2, 2.2):
+                for dy in (-5.5, 0.0, 5.5):
+                    painter.drawEllipse(QPointF(cx + dx, cy + dy), r, r)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton and self.parent():
@@ -296,75 +318,75 @@ class DraggableToolbarPanel(QWidget):
             super().mouseMoveEvent(event)
 
 
-# QSS Stylesheets - CleanShot X Light Mode (Strict User Prompt Spec: rgba(255,255,255,0.88), 16px radius, #3F3F46 text, #E6F1FB active fill, #185FA5 icon)
+# QSS Stylesheets - Clean, Modern Fluent Light Mode (10px radius, refined border, compact buttons)
 common_toolbar_style = """
     QToolTip {
-        background-color: #FFFFFF;
-        color: #3F3F46;
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        border-radius: 8px;
-        padding: 5px 10px;
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-        font-size: 12px;
-        font-weight: 600;
+        background-color: #18181B;
+        color: #FFFFFF;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 6px;
+        padding: 5px 9px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 11px;
+        font-weight: 500;
     }
     DraggableToolbarPanel, QWidget#toolbarPanel {
-        background-color: rgba(255, 255, 255, 0.88);
-        border: 1px solid rgba(0, 0, 0, 0.06);
-        border-radius: 16px;
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
-        color: #3F3F46;
+        background-color: #FFFFFF;
+        border: 1px solid rgba(0, 0, 0, 0.10);
+        border-radius: 10px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        color: #18181B;
     }
     QMenu {
         background-color: #FFFFFF;
-        color: #27272A;
-        border: 1px solid rgba(0, 0, 0, 0.06);
-        border-radius: 12px;
-        padding: 6px;
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
-        font-size: 14px;
-        font-weight: 400;
+        color: #18181B;
+        border: 1px solid rgba(0, 0, 0, 0.10);
+        border-radius: 10px;
+        padding: 5px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
     }
     QMenu::item {
-        padding: 8px 16px 8px 12px;
-        margin: 2px 4px;
-        border-radius: 8px;
+        padding: 6px 14px;
+        margin: 1px 3px;
+        border-radius: 6px;
         color: #27272A;
-        min-height: 24px;
+        min-height: 22px;
     }
     QMenu::item:hover {
         background-color: #F4F4F5;
-        color: #27272A;
+        color: #18181B;
     }
     QMenu::item:selected {
-        background-color: #DBEAFE;
-        color: #1D4ED8;
-        font-weight: 500;
+        background-color: #EFF6FF;
+        color: #2563EB;
+        font-weight: 600;
     }
     QMenu::separator {
         height: 1px;
-        background-color: rgba(0, 0, 0, 0.06);
-        margin: 4px 8px;
+        background-color: rgba(0, 0, 0, 0.08);
+        margin: 4px 6px;
     }
     QToolButton, QPushButton {
         background-color: transparent;
         color: #3F3F46;
         border: none;
-        border-radius: 10px;
-        padding: 4px;
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI Symbol", sans-serif;
+        border-radius: 6px;
+        padding: 2px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         font-weight: 600;
-        font-size: 17px;
+        font-size: 13px;
     }
     QToolButton:hover, QPushButton:hover {
         background-color: #F4F4F5;
         color: #18181B;
     }
     QToolButton:checked {
-        background-color: #E6F1FB;
-        border: none;
-        color: #185FA5;
-        border-radius: 10px;
+        background-color: #EFF6FF;
+        border: 1px solid #BFDBFE;
+        color: #2563EB;
+        border-radius: 6px;
     }
     QToolButton::menu-indicator {
         image: none;
@@ -372,51 +394,54 @@ common_toolbar_style = """
     QToolButton#cancelBtn:hover, QPushButton#cancelBtn:hover {
         background-color: #FEE2E2;
         color: #DC2626;
-        border-radius: 18px;
+        border-radius: 6px;
     }
     QToolButton#zaloCopyBtn, QPushButton#zaloCopyBtn {
-        background: #2563EB;
-        border: none;
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #2563EB, stop:1 #1D4ED8);
+        border: 1px solid rgba(0, 0, 0, 0.05);
         color: #FFFFFF;
-        border-radius: 18px;
+        border-radius: 6px;
         font-weight: bold;
-        font-size: 18px;
+        font-size: 13px;
     }
     QToolButton#zaloCopyBtn:hover, QPushButton#zaloCopyBtn:hover {
-        background: #1D4ED8;
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #3B82F6, stop:1 #2563EB);
     }
 """
 
 word_toolbar_style = """
-    DraggableToolbarPanel, QWidget#wordSubToolbarPanel {
+    DraggableToolbarPanel, QWidget#wordSubToolbarPanel, QWidget#wordSubToolbar {
         background-color: #FFFFFF;
-        border: 1px solid rgba(0, 0, 0, 0.06);
-        border-radius: 12px;
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
-        color: #3F3F46;
+        border: 1px solid rgba(0, 0, 0, 0.10);
+        border-radius: 10px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #18181B;
     }
     QComboBox#fontFamilyCombo {
         background-color: #FAFAFA;
-        color: #27272A;
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        border-radius: 8px;
-        padding: 0px 22px 0px 10px;
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
-        font-size: 13px;
+        color: #18181B;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        border-radius: 6px;
+        padding: 0px 18px 0px 8px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 12px;
         font-weight: 500;
-        min-width: 120px;
-        max-width: 130px;
-        min-height: 30px;
-        max-height: 32px;
+        min-width: 100px;
+        max-width: 110px;
+        min-height: 29px;
+        max-height: 29px;
     }
     QComboBox#fontFamilyCombo:hover {
-        border: 1px solid rgba(0, 0, 0, 0.16);
+        border: 1px solid #2563EB;
         background-color: #FFFFFF;
+    }
+    QComboBox#fontFamilyCombo:focus {
+        border: 1.5px solid #2563EB;
     }
     QComboBox::drop-down {
         subcontrol-origin: padding;
         subcontrol-position: center right;
-        width: 20px;
+        width: 18px;
         border-left: none;
     }
     QComboBox::down-arrow {
@@ -425,128 +450,157 @@ word_toolbar_style = """
     }
     QComboBox QAbstractItemView {
         background-color: #FFFFFF;
-        color: #27272A;
-        border: 1px solid rgba(0, 0, 0, 0.08);
+        color: #18181B;
+        border: 1px solid rgba(0, 0, 0, 0.10);
         border-radius: 8px;
         padding: 4px;
-        selection-background-color: #DBEAFE;
-        selection-color: #1D4ED8;
-        font-size: 13px;
+        selection-background-color: #EFF6FF;
+        selection-color: #2563EB;
+        font-size: 12px;
         font-weight: 500;
         outline: none;
     }
     QSpinBox#fontSizeSpin {
         background-color: #FAFAFA;
-        color: #27272A;
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        border-radius: 8px;
-        padding: 0px 4px;
-        font-size: 13px;
-        font-weight: 500;
-        min-width: 44px;
-        max-width: 56px;
-        min-height: 30px;
+        color: #18181B;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        border-radius: 6px;
+        padding-left: 6px;
+        padding-right: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        min-width: 54px;
+        max-width: 60px;
+        min-height: 32px;
         max-height: 32px;
     }
     QSpinBox#fontSizeSpin:hover {
-        border: 1px solid rgba(0, 0, 0, 0.16);
+        border: 1px solid #2563EB;
         background-color: #FFFFFF;
     }
-    QSpinBox#fontSizeSpin::up-button, QSpinBox#fontSizeSpin::down-button {
-        width: 14px;
-        border: none;
-        background: transparent;
+    QSpinBox#fontSizeSpin:focus {
+        border: 1.5px solid #2563EB;
     }
-    QToolButton#segBtnLeft {
+    QSpinBox#fontSizeSpin::up-button, QSpinBox#fontSizeSpin::down-button {
+        subcontrol-origin: border;
+        width: 16px;
+        background-color: #F4F4F5;
+        border-left: 1px solid rgba(0, 0, 0, 0.12);
+    }
+    QSpinBox#fontSizeSpin::up-button:hover, QSpinBox#fontSizeSpin::down-button:hover {
+        background-color: #E4E4E7;
+    }
+    QSpinBox#fontSizeSpin::up-button {
+        subcontrol-position: top right;
+        border-top-right-radius: 5px;
+    }
+    QSpinBox#fontSizeSpin::down-button {
+        subcontrol-position: bottom right;
+        border-bottom-right-radius: 5px;
         background-color: transparent;
         color: #52525B;
-        border: 1px solid rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.10);
         border-right: none;
         border-radius: 0px;
-        border-top-left-radius: 8px;
-        border-bottom-left-radius: 8px;
+        border-top-left-radius: 6px;
+        border-bottom-left-radius: 6px;
         padding: 0px;
-        font-size: 13px;
+        font-size: 11px;
         font-weight: 700;
-        min-width: 30px;
-        max-width: 32px;
-        min-height: 30px;
+        min-width: 26px;
+        max-width: 26px;
+        min-height: 32px;
         max-height: 32px;
     }
     QToolButton#segBtnMid {
         background-color: transparent;
         color: #52525B;
-        border: 1px solid rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.10);
         border-left: none;
         border-right: none;
         border-radius: 0px;
         padding: 0px;
-        font-size: 13px;
+        font-size: 11px;
         font-weight: 700;
-        min-width: 30px;
-        max-width: 32px;
-        min-height: 30px;
+        min-width: 26px;
+        max-width: 26px;
+        min-height: 32px;
         max-height: 32px;
     }
     QToolButton#segBtnRight {
         background-color: transparent;
         color: #52525B;
-        border: 1px solid rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.10);
         border-left: none;
         border-radius: 0px;
-        border-top-right-radius: 8px;
-        border-bottom-right-radius: 8px;
+        border-top-right-radius: 6px;
+        border-bottom-right-radius: 6px;
         padding: 0px;
-        font-size: 13px;
+        font-size: 11px;
         font-weight: 700;
-        min-width: 30px;
-        max-width: 32px;
-        min-height: 30px;
+        min-width: 26px;
+        max-width: 26px;
+        min-height: 32px;
         max-height: 32px;
     }
     QToolButton#segBtnLeft:hover, QToolButton#segBtnMid:hover, QToolButton#segBtnRight:hover {
         background-color: #F4F4F5;
+        color: #18181B;
     }
     QToolButton#segBtnLeft:checked, QToolButton#segBtnMid:checked, QToolButton#segBtnRight:checked {
-        background-color: #DBEAFE;
-        color: #2563EB;
-        font-weight: 600;
+        background-color: #E6F1FB;
+        color: #185FA5;
+        border-color: #BFDBFE;
     }
     QComboBox#textBgCombo {
         background-color: #FAFAFA;
         color: #27272A;
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        border-radius: 8px;
-        padding: 0px 22px 0px 8px;
-        font-size: 13px;
+        border: 1px solid rgba(0, 0, 0, 0.10);
+        border-radius: 6px;
+        padding: 0px 18px 0px 8px;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+        font-size: 12px;
         font-weight: 500;
-        min-height: 30px;
-        max-height: 32px;
+        min-width: 90px;
+        max-width: 115px;
+        min-height: 29px;
+        max-height: 29px;
     }
     QComboBox#textBgCombo:hover {
-        border: 1px solid rgba(0, 0, 0, 0.16);
+        border: 1px solid rgba(0, 0, 0, 0.20);
         background-color: #FFFFFF;
+    }
+    QComboBox#textBgCombo QAbstractItemView {
+        background-color: #FFFFFF;
+        color: #27272A;
+        border: 1px solid rgba(0, 0, 0, 0.10);
+        border-radius: 6px;
+        padding: 3px;
+        selection-background-color: #DBEAFE;
+        selection-color: #1D4ED8;
+        font-size: 12px;
+        outline: none;
     }
     QToolButton#wordFormatBtn {
         background-color: #FAFAFA;
         color: #3F3F46;
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        border-radius: 8px;
-        padding: 4px 8px;
-        font-size: 13px;
+        border: 1px solid rgba(0, 0, 0, 0.10);
+        border-radius: 6px;
+        padding: 2px 6px;
+        font-size: 11px;
         font-weight: 700;
-        min-width: 28px;
-        min-height: 30px;
+        min-width: 24px;
+        min-height: 32px;
         max-height: 32px;
     }
     QToolButton#wordFormatBtn:hover {
-        border: 1px solid rgba(0, 0, 0, 0.16);
+        border: 1px solid rgba(0, 0, 0, 0.20);
         background-color: #FFFFFF;
         color: #2563EB;
     }
     QToolButton#wordFormatBtn:checked {
-        background-color: #DBEAFE;
-        border: 1px solid rgba(37, 99, 235, 0.3);
-        color: #2563EB;
+        background-color: #E6F1FB;
+        border: 1px solid #BFDBFE;
+        color: #185FA5;
     }
 """

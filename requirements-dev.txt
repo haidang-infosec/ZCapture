@@ -1,0 +1,3 @@
+-r requirements.txt
+# Build & packaging
+pyinstaller>=6.0.0

@@ -1,16 +1,4 @@
-# ==============================================================================
-# ZCapture - Python Dependencies
-# Enterprise Screen Capture & Annotation System
-# ==============================================================================
-
-# Core GUI Framework
-PyQt6>=6.5.0
-
-# Digital Forensics, EXIF & Metadata Processing
+# ZCapture - runtime dependencies
+PyQt6>=6.5.0,<7
 Pillow>=10.0.0
-
-# Global Keyboard Hook & Dynamic Hotkey Listener
 pynput>=1.7.6
-
-# Build & Standalone Packaging (Optional for development / execution)
-pyinstaller>=6.0.0
